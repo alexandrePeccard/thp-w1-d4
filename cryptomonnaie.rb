@@ -12,50 +12,33 @@ def buildHash(devises, values)
 	return hashe
 end
 
-def computeMinMaxValue(hashe)
+def computeMinMaxValue(hashe, max, min)
 	biggestValue = ""
 	lowestValue = ""
+	start = true
 	for key, value in hashe
+		if start
+			lowestValue = value
+			start = false
+		end
 
-		# value.delete("$")
-		# puts value
+		if value[1, value.size].to_f > biggestValue[1, biggestValue.size].to_f
+			biggestValue = value
+		end
+
+		if value[1, value.size].to_f < lowestValue[1, lowestValue.size].to_f
+			lowestValue = value
+		end
 	end
-	# 	if(key == "Bitcoin")
-	# 		lowestValue = value
-	# 	end
 
-	# 	if value[1, value.size].to_f > biggestValue[1, biggestValue.size].to_f
-	# 		biggestValue = value
-	# 	end
+	if max
+		puts "La valeur la plus grande est : #{biggestValue}"
+	end
 
-	# 	if value[1, value.size].to_f < lowestValue[1, lowestValue.size].to_f
-	# 		lowestValue = value
-	# 	end
-	# end
-	# puts "La valeur la plus grande est : #{biggestValue}"
-	# puts "La valeur la plus petite est : #{lowestValue}"
+	if min
+		puts "La valeur la plus petite est : #{lowestValue}"
+	end
 end
-
-# def computeMinMaxValue(hashe)
-# 	biggestValue = ""
-# 	lowestValue = ""
-# 	x = ""
-# 	for key, value in hashe
-# 		if(key == "Bitcoin")
-# 			lowestValue = value
-# 		end
-
-# 		if value[1, value.size].to_f > biggestValue[1, biggestValue.size].to_f
-# 			biggestValue = value
-# 		end
-
-# 		if value[1, value.size].to_f < lowestValue[1, lowestValue.size].to_f
-# 			lowestValue = value
-# 		end
-# 	end
-# 	puts "La valeur la plus grande est : #{biggestValue}"
-# 	puts "La valeur la plus petite est : #{lowestValue}"
-# end
 
 def countWord(word, hashe)
 	countWithCase = 0
@@ -78,19 +61,20 @@ def searchValuesUnderValue(value, hashe)
 	devises = []
 	newHash = hashe
 	for key, val in hashe
-		if val[1, val.size].to_f < value
+		if val[1, val.size].to_f > value
 			newHash.delete(key)
+		else
 			devises << key
 		end
 	end
-
 	puts "Les devises dont la valeur est en dessous de 6000 sont : "
-	# puts devises.size
+	puts devises
 
 	return newHash
 end
+
 hashe = buildHash(devises, values)
-computeMinMaxValue(hashe)
+computeMinMaxValue(hashe, true, true)
 countWord("coin", hashe)
 newHash = searchValuesUnderValue(6000, hashe)
-computeMinMaxValue(newHash)
+computeMinMaxValue(newHash, true, false)
